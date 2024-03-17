@@ -7,15 +7,18 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8001:8000"
+    restart: always
 
   prometheus:
     build: 
       context: ./prometheus
       dockerfile: Dockerfile
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9091:9090"
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
     depends_on:
       - flask_app
 
@@ -25,6 +28,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always  
     depends_on:
       - prometheus
 
+volumes:
+  grafana_data:
+  prometheus_data:
